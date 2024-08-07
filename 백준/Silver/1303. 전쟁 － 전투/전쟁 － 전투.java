@@ -24,6 +24,7 @@ public class Main {
 		N = Integer.parseInt(st.nextToken());
 		M = Integer.parseInt(st.nextToken());
 
+		//병사들의 옷 색을 입력받아서 2차원 배열에 char형으로 저장한다.
 		array = new char[M][N];
 		for(int i=0; i<M; i++) {
 			String army = br.readLine();
@@ -32,8 +33,10 @@ public class Main {
 			}
 		}
 		
+		//방문체크를 위한 2차원 배열 초기화
 		visited = new boolean[M][N];
 		
+		//방문한 곳이 아니고, 병사의 옷 색이  W인 경우 깊이우선탐색 
 		for(int i=0; i<M; i++) {
 			for(int j=0; j<N; j++) {
 				if((!visited[i][j]) && (array[i][j] == 'W')) {
@@ -45,6 +48,7 @@ public class Main {
 			}
 		}
 		
+		//방문한 곳이 아니고, 병사의 옷 색이  B인 경우 깊이우선탐색 
 		for(int i=0; i<M; i++) {
 			for(int j=0; j<N; j++) {
 				if((!visited[i][j]) && (array[i][j] == 'B')) {
@@ -58,6 +62,7 @@ public class Main {
 	}
 
 	private static void DFS(int i, int j) {
+		//탐색시작 -> 방문체크
 		visited[i][j] = true;
 		
 		if(array[i][j] == 'W') {
