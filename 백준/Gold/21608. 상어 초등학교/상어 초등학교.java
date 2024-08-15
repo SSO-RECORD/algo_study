@@ -1,3 +1,15 @@
+/*
+ * 구현을 위해 생각한 방법
+ * - 가장 먼저, emptyCnt 2차원 배열을 생성하여 4방탐색으로 모든 인덱스의 주변의 비어있는 칸의 개수를 세어 저장한다
+ * - 위의 과정을 완료하면, 1번째 학생의 위치를 저장할 최적의 인덱스를 찾는다.
+ * - 이때 고려해야 할 점은, 우선순위가 (1) 주변의 비어있는 칸의 개수가 가장 큰 곳 
+ * - (2) (1)에 해당하는 곳이 여러 개라면, 가장 위쪽에 있는 인덱스 선택,
+ * - (3) (2)에 해당하는 곳도 여래 개라면, 가장 왼쪽에 있는 인덱스를 선택.
+ * - 위의 과정을 거쳐 1번째 학생이 저장될 최적의 위치를 찾고, 학생이 배열에 배치되면 emptyCnt 배열에 저장된 값도 갱신해준다.
+ * - 1번 학생의 위치가 확정되면 이후 2번부터 끝번까지의 과정은 동일하게 진행된다.
+ * - 2번에서 끝번 학생을 배치하기 위해 추가적으로 고려해야 할 점은 각 학생이 선호하는 학생이 인접한 곳에 얼마나 있는지 체크해줘서 
+ * - 주변에 선호하는 학생이 많은 곳에 우선적으로 각 학생을 배치해줘야한다는 점이다.
+ */
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -5,7 +17,7 @@ import java.util.StringTokenizer;
 
 public class Main {
 	
-	private static int[] studentNum;
+	private static int[] studentNum; //학생 번호를 저장하는 배열
 
     public static void main(String[] args) throws NumberFormatException, IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -13,18 +25,18 @@ public class Main {
 
         int N = Integer.parseInt(br.readLine()); // N 입력받기
 
-        int student; // 학생번호 변수
+        int student; // 현재 학생번호 변수
         int like1, like2, like3, like4; // 선호하는 학생 번호
-        studentNum = new int[N * N]; // 학생번호(student)를 저장할 변수
-        int[][] likeNum = new int[N * N][4]; // 선호하는 학생 4명의 번호를 저장할 변수
-        int[][] emptyCnt = new int[N][N];
-        int[] dr = {-1, 1, 0, 0};
-        int[] dc = {0, 0, -1, 1};
-        // 새로운 class 배열 생성
-        int[][] classArray = new int[N][N];
+        studentNum = new int[N * N]; // 학생번호(student)를 저장할 배열
+        int[][] likeNum = new int[N * N][4]; // 선호하는 학생 4명의 번호를 저장할 배열
+        int[][] emptyCnt = new int[N][N]; //각 위치의 인접 빈칸 수를 저장할 배열
+        int[] dr = {-1, 1, 0, 0}; //상하좌우 방향벡터
+        int[] dc = {0, 0, -1, 1}; //상하좌우 방향벡터
+        int[][] classArray = new int[N][N]; //학생들의 최종 위치를 저장할 배열
 
         for (int i = 0; i < N * N; i++) {
-            st = new StringTokenizer(br.readLine()); // 현재 학생의 번호와 선호하는 학생의 번호를 입력받음
+        	// 현재 학생의 번호와 선호하는 학생의 번호를 입력받음
+            st = new StringTokenizer(br.readLine()); 
             student = Integer.parseInt(st.nextToken());
             like1 = Integer.parseInt(st.nextToken());
             like2 = Integer.parseInt(st.nextToken());
@@ -71,12 +83,13 @@ public class Main {
 
     // studentNum[i]를 classArray에 배치하는 메소드
     public static void placeStudent(int studentIndex, int[] studentNum, int[][] likeNum, int[][] classArray, int[][] emptyCnt, int[] dr, int[] dc, int N) {
-        int[] likedStudents = likeNum[studentIndex];
+        int[] likedStudents = likeNum[studentIndex]; //현재 학생이 좋아하는 학생 목록
         int maxCount = -1;
         int bestRow = -1;
         int bestCol = -1;
         int maxEmptyCount = -1;
-
+        
+        //모든 빈칸을 탐색하며 최적의 위치를 찾는다
         for (int i = 0; i < N; i++) {
             for (int j = 0; j < N; j++) {
                 // 빈칸이 아닌 경우는 무시
@@ -185,4 +198,14 @@ public class Main {
 
         return totalSatisfaction;
     }
+
+    // 배열을 출력하는 메소드
+//    public static void printArray(int[][] array) {
+//        for (int[] row : array) {
+//            for (int value : row) {
+//                System.out.print(value + " ");
+//            }
+//            System.out.println();
+//        }
+//    }
 }
