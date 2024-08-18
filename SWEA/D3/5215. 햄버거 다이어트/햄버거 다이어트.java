@@ -1,65 +1,71 @@
-/*
- * 여러 가지 재료 중 일부를 선택하여 최대한의 점수를 얻는 '조합'을 찾는 문제 
- * 단, 선택한 재료들의 칼로리 합이 주어진 제한 칼로리를 넘지 않아야 함
- */
 import java.io.BufferedReader;
-import java.io.IOException;
+import java.io.FileInputStream;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
 import java.util.StringTokenizer;
 
-public class Solution {
+public class Solution{
 
-    private static int foods, limitCal; //foods: 재료의 수, limitCal: 제한 칼로리
-    private static ArrayList<int[]> array; // 각 재료의 [score, cal]을 저장할 리스트
-    private static int maxScore; // 최대 점수를 저장할 변수
+	private static int totalCal, foods;
+	private static int[][] array;
+	private static boolean[] isSelected;
+	private static int maxScore;
 
-    public static void main(String[] args) throws NumberFormatException, IOException {
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        StringTokenizer st;
-        //테스트케이스 갯수 입력받기
-        int T = Integer.parseInt(br.readLine());
-        //재료의 수, 제한칼로리 입력받기
-        for (int tc = 1; tc <= T; tc++) {
-            st = new StringTokenizer(br.readLine());
-            foods = Integer.parseInt(st.nextToken());
-            limitCal = Integer.parseInt(st.nextToken());
+	public static void main(String[] args) throws Exception {
+		//System.setIn(new FileInputStream("res/sample_input.txt"));
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st;
+		StringBuilder sb = new StringBuilder();
+		
+		int T = Integer.parseInt(br.readLine()); //테스트케이스 개수 입력받기
+		for(int tc=1; tc<=T; tc++) {
+			st = new StringTokenizer(br.readLine());
+			foods = Integer.parseInt(st.nextToken()); //재료의 수 입력받기
+			totalCal = Integer.parseInt(st.nextToken()); //제한 칼로리 입력받기
+			
+			array = new int[foods][2];
+			isSelected = new boolean[foods];
+			for(int i=0; i<foods; i++) {
+				st = new StringTokenizer(br.readLine());
+				int score = Integer.parseInt(st.nextToken()); //맛에 대한 점수 입력받기
+				int cal = Integer.parseInt(st.nextToken()); //재료의 칼로리 입력받기
+				
+				array[i][0] = score;
+				array[i][1] = cal;
+			}
+			maxScore = 0; // 각 테스트 케이스마다 최대 점수를 초기화
+            subset(0, 0, 0);
+            
+            sb.append("#").append(tc).append(" ").append(maxScore).append("\n");
+			
+			//subset(0, 0, 0, maxScore);
+		}
+		System.out.print(sb);
 
-            array = new ArrayList<>();
-            maxScore = 0;
-            //재료의 갯수 만큼 재료정보(점수, 칼로리) 입력받기
-            for (int i = 0; i < foods; i++) {
-                st = new StringTokenizer(br.readLine());
-                int score = Integer.parseInt(st.nextToken());
-                int cal = Integer.parseInt(st.nextToken());
-                array.add(new int[] { score, cal });
-            }
+	}
+	
+	private static void subset(int cnt, int currentScore, int currentCal) {
+		if(cnt == foods) { //모든 원소가 다 처리되었다면
+			if(currentCal <= totalCal) {
+				if(currentScore > maxScore) {
+					//maxScore=Math.max(currentScore, maxScore); 
+					maxScore = currentScore;
+				}
+			}
+			return;
+		}
+		
+		
+		//선택
+		isSelected[cnt] = true;
+		int scores = array[cnt][0];
+		int calories = array[cnt][1];
+		subset(cnt+1, scores + currentScore, calories + currentCal);
+		
+		//비선택
+		isSelected[cnt] = false;
+		subset(cnt+1, currentScore, currentCal);
+	
+	}
+	
 
-            // 조합을 시작하는 메서드 호출
-            comb(0, 0, 0); 
-
-            // 결과 출력
-            System.out.println("#" + tc + " " + maxScore);
-        }
-    }
-
-    private static void comb(int index, int currentScore, int currentCal) {
-        // 제한 칼로리 초과 시 종료
-        if (currentCal > limitCal) {
-            return;
-        }
-
-        // 현재 조합의 점수가 최대 점수인지 확인하여 갱신
-        if (currentScore > maxScore) {
-            maxScore = currentScore;
-        }
-
-        // 재귀적으로 다음 재료를 고려
-        for (int i = index; i < foods; i++) {
-            int score = array.get(i)[0]; //현재 재료의 점수
-            int cal = array.get(i)[1]; //현재 재료의 칼로리
-            //다음 재료를 포함한 새로운 조합으로 재귀 호출
-            comb(i + 1, currentScore + score, currentCal + cal);
-        }
-    }
 }
