@@ -2,9 +2,10 @@ import java.util.Scanner;
 
 public class Solution {
 
-	static int N, M, result;
+	static int N, M;
 	
 	public static void main(String[] args) throws Exception {
+		//System.setIn(new FileInputStream("res/SWEA1217_input.txt"));
 		Scanner sc = new Scanner(System.in);
 		
 		for(int tc=1; tc<=10; tc++) {
@@ -13,7 +14,7 @@ public class Solution {
 			N = sc.nextInt();
 			M = sc.nextInt();
 			
-			recursion(M);
+			int result = recursion(M);
 			System.out.println("#"+T+" "+result);
 		}
 	}
@@ -23,9 +24,8 @@ public class Solution {
 		if(m == 1) return N;
 		
 		//유도파트
-		result = recursion(m-1) * N;
+		return recursion(m-1) * N;
 		
-		return result;
 	}
 
 }
