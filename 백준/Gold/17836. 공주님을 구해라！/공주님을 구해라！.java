@@ -65,6 +65,7 @@ public class Main {
 		while (!queue.isEmpty()) {
 			Node cur = queue.poll();
 
+			//공주님이 있는 곳에 time 시간 이내에 도착했다면 거리를 리턴
 			if (cur.x == N - 1 && cur.y == M - 1 && cur.distance <= time) {
 				return cur.distance;
 			}
@@ -76,15 +77,15 @@ public class Main {
 				int distance = cur.distance;
 
 				if (isIn(nx, ny) && !visited[gram][nx][ny]) {
-					if (castle[nx][ny] == 0) {
+					if (castle[nx][ny] == 0) { //빈공간을 그냥 이동
 						visited[gram][nx][ny] = true;
 						queue.add(new Node(nx, ny, gram, distance + 1));
 					}
-					if (castle[nx][ny] == 2) {
+					if (castle[nx][ny] == 2) {//2라면 그람 획득
 						visited[gram][nx][ny] = true;
 						queue.add(new Node(nx, ny, 1, distance + 1));
 					}
-					if (castle[nx][ny] == 1 && gram > 0) {
+					if (castle[nx][ny] == 1 && gram > 0) { //벽이지만, 그람을 획득한 상태라면 부수기 가능
 						visited[gram][nx][ny] = true;
 						queue.add(new Node(nx, ny, gram, distance + 1));
 					}
@@ -94,53 +95,7 @@ public class Main {
 		return -1;
 	}
 
-//	private static int bfs(int r, int c, int t, int gram) {
-//
-//		Queue<int[]> queue = new LinkedList<>();
-//		queue.add(new int[] { r, c, 0 });
-//		visited[r][c] = true;
-//
-//		while (!queue.isEmpty()) {
-//			int[] cur = queue.poll();
-//			int cr = cur[0];
-//			int cc = cur[1];
-//			int ct = cur[2];
-//
-//			if (cr == N - 1 && cc == M - 1 && ct <= t) {
-//				return ct;
-//			}
-//			
-//			if (gram > 0) {
-//				visited = new boolean[N][M];
-//			}
-//
-//			for (int d = 0; d < 4; d++) {
-//				int nr = cr + dr[d];
-//				int nc = cc + dc[d];
-//				int nt = ct + 1;
-//
-//				if (isIn(nr, nc) && !visited[nr][nc]) {
-//					if (castle[nr][nc] == 0) {
-//						queue.add(new int[] { nr, nc, nt });
-//						visited[nr][nc] = true;
-//					}
-//					if (castle[nr][nc] == 2) {
-//						gram++;
-//						queue.add(new int[] { nr, nc, nt });
-////						visited[nr][nc] = true;
-//					}
-//					if (castle[nr][nc] == 1 && gram > 0) {
-//						queue.add(new int[] { nr, nc, nt });
-//						visited[nr][nc] = true;
-//					}
-//				}
-//			}
-//		}
-//
-//		return -1;
-//
-//	}
-
+	//범위체크 메서드
 	private static boolean isIn(int r, int c) {
 		if (r >= 0 && r < N && c >= 0 && c < M)
 			return true;
