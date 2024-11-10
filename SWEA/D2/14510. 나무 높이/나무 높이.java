@@ -1,44 +1,50 @@
 import java.io.BufferedReader;
-import java.io.IOException;
+import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.util.Arrays;
 import java.util.StringTokenizer;
 
 public class Solution {
-	public static void main(String[] args) throws NumberFormatException, IOException {
+
+	public static void main(String[] args) throws Exception {
+		//System.setIn(new FileInputStream("res/SWEA14510_Sample_input.txt"));
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st;
 		StringBuilder sb = new StringBuilder();
-		StringTokenizer st = null;
-		int T = Integer.parseInt(br.readLine());
+
+		int T = Integer.parseInt(br.readLine().trim()); // 테스트케이스 수
+		// T만큼 반복
 		for (int tc = 1; tc <= T; tc++) {
-			sb.append("#").append(tc).append(" ");
-//			System.out.println(sb);
-			int N = Integer.parseInt(br.readLine());
+			int N = Integer.parseInt(br.readLine().trim()); // 나무의 개수
 			int[] tree = new int[N];
-			int limit = 0;
-			int sum = 0;
-			
+			int maxHeight = 0;
 			st = new StringTokenizer(br.readLine());
 			for (int i = 0; i < tree.length; i++) {
 				tree[i] = Integer.parseInt(st.nextToken());
-				limit = Math.max(limit, tree[i]);
+
+				if (maxHeight < tree[i]) {
+					maxHeight = tree[i];
+				}
 			}
 
+			int sum = 0;
 			for (int i = 0; i < tree.length; i++) {
-				tree[i] = limit - tree[i];
+				tree[i] = maxHeight - tree[i];
 				sum += tree[i];
 			}
 
 			if (sum == 0) {
-				sb.append(0).append("\n");
+				sb.append("#").append(tc).append(" ").append(0).append("\n");
 				continue;
 			}
 
 			Arrays.sort(tree);
+
 			int day = 1;
 			while (true) {
 				for (int i = 0; i < tree.length; i++) {
-                    if(tree[i] == 0) continue;
+					if (tree[i] == 0)
+						continue;
 					if (tree[i] >= 3) {
 						if (day % 2 == 1) {
 							tree[i] -= 1;
@@ -47,29 +53,33 @@ public class Solution {
 						}
 						break;
 					}
+
 					if (day % 2 == 1 && tree[i] == 1) {
-						tree[i] = 0;
+						tree[i] -= 1;
 						break;
 					}
+
 					if (day % 2 == 0 && tree[i] == 2) {
-						tree[i] = 0;
+						tree[i] -= 2;
 						break;
 					}
-				} // for
-				if (check(tree))
+				}
+
+				if (isCheck(tree))
 					break;
 				day++;
-			} // while
-			sb.append(day).append("\n");
-		} // for_tc
-		System.out.println(sb);
-	}// main
+			}
+			sb.append("#").append(tc).append(" ").append(day).append("\n");
+		}
+		System.out.print(sb);
+	}
 
-	private static boolean check(int[] tree) {
+	private static boolean isCheck(int[] tree) {
 		for (int i = 0; i < tree.length; i++) {
 			if (tree[i] != 0)
 				return false;
 		}
 		return true;
 	}
-}// class
+
+}
