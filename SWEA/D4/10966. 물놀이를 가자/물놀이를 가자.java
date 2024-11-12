@@ -7,7 +7,7 @@ import java.util.StringTokenizer;
 
 public class Solution {
 
-	static int N, M;
+	static int R, C;
 	static char[][] map;
 	static int[][] distance;
 	static int[] dr = { -1, 1, 0, 0 };
@@ -19,25 +19,23 @@ public class Solution {
 		StringTokenizer st;
 		StringBuilder sb = new StringBuilder();
 
-		int T = Integer.parseInt(br.readLine().trim()); // 테스트케이스 수
-		for (int t = 1; t <= T; t++) {
+		int T = Integer.parseInt(br.readLine().trim());
+		for (int tc = 1; tc <= T; tc++) {
 			st = new StringTokenizer(br.readLine());
-			N = Integer.parseInt(st.nextToken()); // 행의 수
-			M = Integer.parseInt(st.nextToken()); // 열의 수
+			R = Integer.parseInt(st.nextToken());
+			C = Integer.parseInt(st.nextToken());
 
-			map = new char[N][M];
-			distance = new int[N][M];
-
+			map = new char[R][C];
+			distance = new int[R][C];
 			Queue<int[]> water = new LinkedList<>();
 
-			for (int row = 0; row < N; row++) {
+			for (int row = 0; row < R; row++) {
 				String str = br.readLine();
-				for (int col = 0; col < M; col++) {
+				for (int col = 0; col < C; col++) {
 					map[row][col] = str.charAt(col);
 
 					if (map[row][col] == 'W') {
-						water.add(new int[] { row, col });
-						distance[row][col] = 0;
+						water.add(new int[] { row, col, 0 });
 					} else {
 						distance[row][col] = Integer.MAX_VALUE;
 					}
@@ -45,33 +43,37 @@ public class Solution {
 			}
 
 			bfs(water);
+
 			int result = 0;
-			for (int row = 0; row < N; row++) {
-				for (int col = 0; col < M; col++) {
+			for (int row = 0; row < R; row++) {
+				for (int col = 0; col < C; col++) {
 					result += distance[row][col];
 				}
 			}
-			sb.append("#").append(t).append(" ").append(result).append("\n");
+			sb.append("#").append(tc).append(" ").append(result).append("\n");
+
 		}
 		System.out.print(sb);
+
 	}
 
 	private static void bfs(Queue<int[]> water) {
 
 		while (!water.isEmpty()) {
+
 			int[] cur = water.poll();
 			int cr = cur[0];
 			int cc = cur[1];
+			int ct = cur[2];
 
 			for (int d = 0; d < 4; d++) {
 				int nr = cr + dr[d];
 				int nc = cc + dc[d];
+				int nt = ct + 1;
 
-				if (isIn(nr, nc) && map[nr][nc] == 'L') {
-					if (distance[nr][nc] > distance[cr][cc] + 1) {
-						distance[nr][nc] = distance[cr][cc] + 1;
-						water.add(new int[] { nr, nc });
-					}
+				if (isIn(nr, nc) && map[nr][nc] != 'W' && distance[nr][nc] > distance[cr][cc] + 1) {
+					distance[nr][nc] = distance[cr][cc] + 1;
+					water.add(new int[] { nr, nc, nt });
 				}
 			}
 		}
@@ -79,7 +81,7 @@ public class Solution {
 	}
 
 	private static boolean isIn(int r, int c) {
-		return (r >= 0 && r < N && c >= 0 && c < M);
+		return (r >= 0 && r < R && c >= 0 && c < C);
 	}
 
 }
